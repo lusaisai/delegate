@@ -12,11 +12,20 @@ curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_HEADER, TRUE);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 
+
+// request headers
+$request_headers = [];
+foreach ( getallheaders() as $key => $value) {
+	$request_headers[] = "$key: $value";
+}
+curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);
+
+
 // execute
 $response = curl_exec($ch);
 
-// replace header
-list( $header, $body ) = explode("\r\n\r\n", $response);
+// response headers
+list( $header, $body ) = explode("\r\n\r\n", $response, 2);
 foreach ( explode("\r\n", $header) as $value) {
 	header($value);
 }
